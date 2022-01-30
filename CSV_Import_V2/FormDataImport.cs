@@ -155,38 +155,50 @@ namespace CSV_Import_V2
                 string InsertItemQry = "";
                 int count = 0;
 
-                foreach (DataRow dr in dtItem.Rows)
+                DateTime cur_date = DateTime.Now;
+                int day = cur_date.Day;
+                
+                if (day >= 1 && day <= 3)
                 {
-                    Loc = Convert.ToString(dr["Loc"]);
-                    DC = Convert.ToString(dr["DC"]);
-                    OPC = Convert.ToString(dr["OPC"]);
-                    TSQ = Convert.ToString(dr["TSQ"]);
-                    OAC = Convert.ToString(dr["OAC"]);
-
-                    if (Loc != "" && dr["Loc Zn"].ToString() != "" && dr["Loc Name"].ToString() != "")
+                    foreach (DataRow dr in dtItem.Rows)
                     {
-                        InsertItemQry += "DELETE FROM Shipment WHERE Loc = '" + Loc + "' INSERT INTO Shipment VALUES('" + Loc + "','" + dr["Loc Zn"] + "','" + dr["Loc Name"] + "','" + dr["Loc Purp Desc"] + "','" + dr["Loc/QTI"] + "','" + dr["Flow Ind"] + "','" + DC + "','" + OPC + "','" + TSQ + "','" + OAC + "','" + dr["IT"] + "','" + dr["Auth Overrun Ind"] + "','" + dr["Nom Cap Exceed Ind"] + "','" + dr["All Qty Avail"] + "','" + dr["Qty Reason"] + "'); ";
-                        count++;
+                        Loc = Convert.ToString(dr["Loc"]);
+                        DC = Convert.ToString(dr["DC"]);
+                        OPC = Convert.ToString(dr["OPC"]);
+                        TSQ = Convert.ToString(dr["TSQ"]);
+                        OAC = Convert.ToString(dr["OAC"]);
+
+                        if (Loc != "" && dr["Loc Zn"].ToString() != "" && dr["Loc Name"].ToString() != "")
+                        {
+                            InsertItemQry += "DELETE FROM Shipment WHERE Loc = '" + Loc + "' INSERT INTO Shipment VALUES('" + Loc + "','" + dr["Loc Zn"] + "','" + dr["Loc Name"] + "','" + dr["Loc Purp Desc"] + "','" + dr["Loc/QTI"] + "','" + dr["Flow Ind"] + "','" + DC + "','" + OPC + "','" + TSQ + "','" + OAC + "','" + dr["IT"] + "','" + dr["Auth Overrun Ind"] + "','" + dr["Nom Cap Exceed Ind"] + "','" + dr["All Qty Avail"] + "','" + dr["Qty Reason"] + "'); ";
+                            count++;
+                        }
+                    }
+
+                    if (InsertItemQry.Length > 5)
+                    {
+                        bool isSuccess = DBAccess.ExecuteQuery(InsertItemQry);
+
+                        if (isSuccess)
+                        {
+                            MessageBox.Show($"{count} Records Imported Successfully into DB", "Confirmation");
+                            //dataGridView1.DataSource = null;
+                            //Save_btn.Enabled = false;
+                            MessageBox.Show($"Thank you for using the app!", "Confirmation");
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Check DB Connection, Something wrong...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
                 }
-
-                if (InsertItemQry.Length > 5)
+                else
                 {
-                    bool isSuccess = DBAccess.ExecuteQuery(InsertItemQry);
-
-                    if (isSuccess)
-                    {
-                        MessageBox.Show($"{count} Records Imported Successfully into DB", "Confirmation");
-                        //dataGridView1.DataSource = null;
-                        //Save_btn.Enabled = false;
-                        MessageBox.Show($"Thank you for using the app!", "Confirmation");
-                        this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Check DB Connection, Something wrong...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    MessageBox.Show("Data is already been imported during the first 3 days of current cycle...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
+                
             }
             catch (Exception ex)
             {
