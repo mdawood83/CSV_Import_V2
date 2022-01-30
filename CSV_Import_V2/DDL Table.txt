@@ -1,0 +1,34 @@
+USE NaturalGasDB;
+
+CREATE TABLE Shipment(
+					Loc int NOT NULL,
+					Loc_Zn varchar(50) NOT NULL,
+					Loc_Name varchar(100) NOT NULL,
+					Loc_Purp_Desc varchar(40),
+					Loc_QTI varchar(40),
+					Flow_Ind char(1),
+					DC int,
+					OPC int,
+					TSQ int,
+					OAC int,
+					IT char(1),
+					Auth_Overrun_Ind char(1),
+					Nom_Cap_Exceed_Ind char(1),
+					All_Qty_Avail char(1),
+					Qty_Reason varchar(50)
+					)
+
+///////////////////////////////////////////////////////
+INSERT Query:
+
+DELETE FROM Shipment WHERE Loc <> ''
+INSERT INTO Shipment VALUES
+	(
+		Loc, 'Loc_Zn', 'Loc_Name', 'Loc_Purp_Desc', 'Loc_QTI', 'Flow_Ind', DC, OPC, TSQ, OAC, 'IT', 'Auth_Overrun_Ind', 'Nom_Cap_Exceed_Ind', 'All_Qty_Avail', 'Qty_Reason'
+	)
+
+///////////////////////////////////////////////////////
+App.config:
+<connectionStrings>
+    <add name="NaturalGasDB" connectionString="Data Source=.;Initial Catalog=NaturalGasDB;Integrated Security=True" providerName="System.Data.SqlClient" />
+  </connectionStrings>
